@@ -3,24 +3,27 @@ package de.cspeckner.babytracker.activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.getpebble.android.kit.PebbleKit;
 import com.getpebble.android.kit.util.PebbleDictionary;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import de.cspeckner.babytracker.Event;
+import de.cspeckner.babytracker.EventCursorAdapter;
+import de.cspeckner.babytracker.EventDataDbHelper;
 import de.cspeckner.babytracker.EventMarshaller;
+import de.cspeckner.babytracker.EventRepository;
 import de.cspeckner.babytracker.R;
 
 public class MainActivity extends ActionBarActivity {
@@ -28,24 +31,47 @@ public class MainActivity extends ActionBarActivity {
     private final static UUID watchappUuid = UUID.fromString("01a70c71-d8c1-4e33-9c12-c646168380e1");
 
     private TextView debugField;
+    private ListView eventListView;
+
     private Handler handler;
 
-    private ArrayList<CharSequence> eventList = new ArrayList<>();
-    private ArrayAdapter<CharSequence> eventListAdapter;
+    private EventCursorAdapter eventListAdapter;
+
+    private EventRepository eventRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Context context = getApplicationContext();
-
-        debugField = (TextView)findViewById(R.id.debugfield);
-        ListView eventListView = (ListView)findViewById(R.id.eventList);
         handler = new Handler();
 
-        eventListAdapter = new ArrayAdapter<>(context, R.layout.eventlistitem, eventList);
+        initDb();
+        collectChildViews();
+        configureList();
+        setupPebble();
+    }
+
+    private void initDb() {
+        EventDataDbHelper dbHelper = new EventDataDbHelper(getApplicationContext());
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        eventRepository = new EventRepository(db);
+    }
+
+    private void collectChildViews() {
+        debugField = (TextView) findViewById(R.id.debugfield);
+        eventListView = (ListView) findViewById(R.id.eventList);
+    }
+
+    private void configureList() {
+        Cursor cursor = eventRepository.getCursorForAll();
+        eventListAdapter = new EventCursorAdapter(getApplicationContext(), cursor);
+
         eventListView.setAdapter(eventListAdapter);
+    }
+
+    private void setupPebble() {
+        Context context = getApplicationContext();
 
         notififyPebbleConnectionStatus(PebbleKit.isWatchConnected(context));
 
@@ -80,21 +106,22 @@ public class MainActivity extends ActionBarActivity {
                 List<Event> events;
                 try {
                     events = EventMarshaller.unmarshalEvents(data);
-                }
-                catch (EventMarshaller.InvalidMessageException e) {
+                } catch (EventMarshaller.InvalidMessageException e) {
                     return;
                 }
 
-                final List<Event> pickledEvents = events;
-
                 PebbleKit.sendAckToPebble(context, i);
+
+                for (Event event : events) {
+                    eventRepository.persist(event);
+                }
+
+                final Cursor cursor = eventRepository.getCursorForAll();
 
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        for (Event event: pickledEvents) {
-                            eventListAdapter.add(event.toString());
-                        }
+                        eventListAdapter.changeCursor(cursor);
                     }
                 });
 
@@ -104,7 +131,7 @@ public class MainActivity extends ActionBarActivity {
         PebbleKit.startAppOnPebble(context, watchappUuid);
     }
 
-    protected void notififyPebbleConnectionStatus(final boolean status) {
+    private void notififyPebbleConnectionStatus(final boolean status) {
         handler.post(new Runnable() {
             @Override
             public void run() {

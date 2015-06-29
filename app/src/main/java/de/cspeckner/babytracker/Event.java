@@ -6,7 +6,21 @@ import java.util.Date;
 public class Event {
 
     public enum Type {
-        FEED, DIAPER, SLEEP_START, SLEEP_STOP
+        FEED(0), DIAPER(1), SLEEP_START(2), SLEEP_STOP(3);
+
+        private final int value;
+
+        private Type(int value) {
+            this.value = value;
+        }
+
+        public int toInt() {
+            return value;
+        }
+
+        public static Type fromInt(int value) {
+            return Type.values()[value];
+        }
     }
 
     protected Type type;
@@ -18,7 +32,6 @@ public class Event {
         return this;
     }
 
-
     public Type getType() {
         return type;
     }
@@ -29,6 +42,12 @@ public class Event {
 
     public Event setTime(Date time) {
         this.time = time;
+
+        return this;
+    }
+
+    public Event setTime(long timestamp) {
+        this.time = new Date(timestamp);
 
         return this;
     }

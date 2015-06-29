@@ -42,7 +42,7 @@ public class EventMarshaller {
             Event event = new Event();
             event
                     .setType(decodeType(buffer[i]))
-                    .setTime(new Date(1000 * timestamp));
+                    .setTime(1000 * timestamp);
 
             events.add(event);
         }
