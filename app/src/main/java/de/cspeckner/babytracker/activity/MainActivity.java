@@ -3,9 +3,11 @@ package de.cspeckner.babytracker.activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -14,21 +16,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.getpebble.android.kit.PebbleKit;
-import com.getpebble.android.kit.util.PebbleDictionary;
 
-import java.util.List;
-import java.util.UUID;
-
-import de.cspeckner.babytracker.Event;
+import de.cspeckner.babytracker.Constants;
 import de.cspeckner.babytracker.EventCursorAdapter;
 import de.cspeckner.babytracker.EventDataDbHelper;
-import de.cspeckner.babytracker.EventMarshaller;
 import de.cspeckner.babytracker.EventRepository;
 import de.cspeckner.babytracker.R;
 
 public class MainActivity extends ActionBarActivity {
-
-    private final static UUID watchappUuid = UUID.fromString("01a70c71-d8c1-4e33-9c12-c646168380e1");
 
     private TextView debugField;
     private ListView eventListView;
@@ -49,6 +44,8 @@ public class MainActivity extends ActionBarActivity {
         initDb();
         collectChildViews();
         configureList();
+        registerReceivers();
+        updateList();
         setupPebble();
     }
 
@@ -89,46 +86,7 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 
-        PebbleKit.registerReceivedDataHandler(context, new PebbleKit.PebbleDataReceiver(watchappUuid) {
-            @Override
-            public void receiveData(Context context, int i, PebbleDictionary pebbleDictionary) {
-                byte[] data;
-
-                try {
-                    if (pebbleDictionary.getUnsignedIntegerAsLong(0) != 1) return;
-
-                    data = pebbleDictionary.getBytes(1);
-                    if (data == null) return;
-                } catch (Exception e) {
-                    return;
-                }
-
-                List<Event> events;
-                try {
-                    events = EventMarshaller.unmarshalEvents(data);
-                } catch (EventMarshaller.InvalidMessageException e) {
-                    return;
-                }
-
-                PebbleKit.sendAckToPebble(context, i);
-
-                for (Event event : events) {
-                    eventRepository.persist(event);
-                }
-
-                final Cursor cursor = eventRepository.getCursorForAll();
-
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        eventListAdapter.changeCursor(cursor);
-                    }
-                });
-
-            }
-        });
-
-        PebbleKit.startAppOnPebble(context, watchappUuid);
+        PebbleKit.startAppOnPebble(context, Constants.watchappUuid);
     }
 
     private void notififyPebbleConnectionStatus(final boolean status) {
@@ -138,6 +96,27 @@ public class MainActivity extends ActionBarActivity {
                 debugField.setText(status ? "Pebble connected" : "Pebble disconnected");
             }
         });
+    }
+
+    public void updateList() {
+        eventListAdapter.changeCursor(eventRepository.getCursorForAll());
+    }
+
+    private void registerReceivers() {
+        LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(getApplicationContext());
+        IntentFilter filter = new IntentFilter(Constants.ACTION_NEW_EVENTS);
+
+        localBroadcastManager.registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        updateList();
+                    }
+                });
+            }
+        }, filter);
     }
 
     @Override
