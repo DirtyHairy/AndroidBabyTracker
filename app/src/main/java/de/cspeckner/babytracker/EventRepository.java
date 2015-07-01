@@ -18,7 +18,7 @@ public class EventRepository {
         values.put(EventDataContract.Event.COLUMN_NAME_TYPE, event.getType().toInt());
         values.put(EventDataContract.Event.COLUMN_NAME_TIMESTAMP, event.getTime().getTime());
 
-        db.insert(EventDataContract.Event.TABLE_NAME, null, values);
+        db.insertWithOnConflict(EventDataContract.Event.TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_IGNORE);
     }
 
     public Cursor getCursorForAll() {

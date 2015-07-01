@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class EventDataDbHelper extends SQLiteOpenHelper {
 
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
     public static final String DATABASE_NAME = "EventData.db";
 
     public EventDataDbHelper(Context context) {
@@ -15,7 +15,7 @@ public class EventDataDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String sql = String.format(
+        final String createSql = String.format(
                 "CREATE TABLE %s ( " +
                     "%s INTEGER PRIMARY KEY, " +
                     "%s INTEGER NOT NULL, " +
@@ -25,13 +25,26 @@ public class EventDataDbHelper extends SQLiteOpenHelper {
                 EventDataContract.Event.COLUMN_NAME_ID,
                 EventDataContract.Event.COLUMN_NAME_TYPE,
                 EventDataContract.Event.COLUMN_NAME_TIMESTAMP
-        );
+            ),
+            indexSql = String.format(
+                "CREATE UNIQUE INDEX %s_%s_idx ON %s (%s, %s);",
+                EventDataContract.Event.COLUMN_NAME_TYPE,
+                EventDataContract.Event.COLUMN_NAME_TIMESTAMP,
+                EventDataContract.Event.TABLE_NAME,
+                EventDataContract.Event.COLUMN_NAME_TYPE,
+                EventDataContract.Event.COLUMN_NAME_TIMESTAMP
+            );
 
-        db.execSQL(sql);
+        db.execSQL(createSql);
+        db.execSQL(indexSql);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        final String sql = String.format("DROP TABLE %s;", EventDataContract.Event.TABLE_NAME);
 
+        db.execSQL(sql);
+
+        onCreate(db);
     }
 }
