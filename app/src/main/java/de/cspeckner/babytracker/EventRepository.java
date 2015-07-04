@@ -31,6 +31,10 @@ public class EventRepository {
         ), null);
     }
 
+    public void deleteAll() {
+        db.delete(EventDataContract.Event.TABLE_NAME, null, null);
+    }
+
     public static Event createEvent(Cursor cursor) {
         Event event = new Event();
 

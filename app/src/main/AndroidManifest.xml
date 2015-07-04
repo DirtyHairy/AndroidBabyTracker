@@ -21,11 +21,11 @@
             android:name=".receiver.PebbleReceive"
             android:enabled="true"
             android:exported="true" >
-
             <intent-filter>
-                <action android:name="com.getpebble.action.app.RECEIVE"/>
+                <action android:name="com.getpebble.action.app.RECEIVE" />
             </intent-filter>
         </receiver>
+
     </application>
 
 </manifest>
