@@ -16,7 +16,7 @@ public class EventCursorAdapter extends CursorAdapter {
 
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        return LayoutInflater.from(context).inflate(R.layout.eventlistitem, parent, false);
+        return LayoutInflater.from(context).inflate(R.layout.event_list_item, parent, false);
     }
 
     @Override

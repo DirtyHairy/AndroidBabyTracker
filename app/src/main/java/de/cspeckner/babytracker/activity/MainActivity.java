@@ -52,6 +52,13 @@ public class MainActivity extends AppCompatActivity {
         setupPebble();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
     private void initDb() {
         EventDataDbHelper dbHelper = new EventDataDbHelper(getApplicationContext());
         SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -122,25 +129,9 @@ public class MainActivity extends AppCompatActivity {
         clearAlert.show();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
+    public void onAddClick(MenuItem item) {
+        Intent intent = new Intent(this, EditEventActivity.class);
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+        startActivityForResult(intent, 0);
     }
 }

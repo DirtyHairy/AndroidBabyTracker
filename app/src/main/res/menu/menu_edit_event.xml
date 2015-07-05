@@ -1,0 +1,23 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="de.cspeckner.babytracker.activity.EditEventActivity">
+
+    <item
+        android:id="@+id/action_save_event"
+        android:title="@string/action_save_event"
+        app:showAsAction="ifRoom"
+        android:icon="@android:drawable/ic_menu_save"
+        android:orderInCategory="90"
+        android:onClick="onSaveEventClick"
+        />
+
+    <item
+        android:id="@+id/action_cancel"
+        android:title="@string/action_cancel"
+        app:showAsAction="ifRoom"
+        android:icon="@android:drawable/ic_menu_close_clear_cancel"
+        android:orderInCategory="100"
+        android:onClick="onCancelClick"
+        />
+</menu>

@@ -10,5 +10,7 @@
     <string name="clear_alert_cancel_button_label">No, cancel</string>
     <string name="action_add">Add</string>
 
-    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_edit_event">Edit Event</string>
+    <string name="action_save_event">Save</string>
+    <string name="action_cancel">Cancel</string>
 </resources>
