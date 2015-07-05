@@ -1,7 +1,6 @@
-package de.cspeckner.babytracker;
+package de.cspeckner.babytracker.persistence;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class EventMarshaller {

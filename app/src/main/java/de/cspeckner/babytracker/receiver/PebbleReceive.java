@@ -15,10 +15,11 @@ import java.util.List;
 import java.util.UUID;
 
 import de.cspeckner.babytracker.Constants;
-import de.cspeckner.babytracker.Event;
-import de.cspeckner.babytracker.EventDataDbHelper;
-import de.cspeckner.babytracker.EventMarshaller;
-import de.cspeckner.babytracker.EventRepository;
+import de.cspeckner.babytracker.persistence.Event;
+import de.cspeckner.babytracker.persistence.EventDataDbHelper;
+import de.cspeckner.babytracker.persistence.EventMarshaller;
+import de.cspeckner.babytracker.persistence.EventRepository;
+import de.cspeckner.babytracker.persistence.InvalidEventIdException;
 
 public class PebbleReceive extends BroadcastReceiver {
 
@@ -77,7 +78,11 @@ public class PebbleReceive extends BroadcastReceiver {
         EventRepository eventRepository = new EventRepository(dbHelper.getWritableDatabase());
 
         for (Event event : events) {
-            eventRepository.persist(event);
+            try {
+                eventRepository.persist(event);
+            } catch (InvalidEventIdException e) {
+                throw new RuntimeException("invalid ID during event import - cannot happen");
+            }
         }
 
         LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(context);

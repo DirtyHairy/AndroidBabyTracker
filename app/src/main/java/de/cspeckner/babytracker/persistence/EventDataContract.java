@@ -1,4 +1,4 @@
-package de.cspeckner.babytracker;
+package de.cspeckner.babytracker.persistence;
 
 public final class EventDataContract {
 

@@ -14,6 +14,8 @@ public final class Constants {
 
     public static final String ACTION_NEW_EVENTS = "de.cspeckner.babytracker.action.NEW_EVENTS";
 
+    public static final String EXTRA_EVENT = "de.cspeckner.babytracker.EXTRA_EVENT";
+
     private Constants() {}
 
 }

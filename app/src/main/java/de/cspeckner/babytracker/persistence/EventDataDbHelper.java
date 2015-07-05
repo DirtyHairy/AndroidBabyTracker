@@ -1,4 +1,4 @@
-package de.cspeckner.babytracker;
+package de.cspeckner.babytracker.persistence;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
 
+import de.cspeckner.babytracker.persistence.EventRepository;
+
 public class EventCursorAdapter extends CursorAdapter {
 
     public EventCursorAdapter(Context context, Cursor cursor) {

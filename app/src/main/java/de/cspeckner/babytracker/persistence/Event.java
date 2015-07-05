@@ -1,16 +1,19 @@
-package de.cspeckner.babytracker;
+package de.cspeckner.babytracker.persistence;
+
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Event {
+public class Event implements Parcelable {
 
     public enum Type {
         FEED(0), DIAPER(1), SLEEP_START(2), SLEEP_STOP(3);
 
         private final int value;
 
-        private Type(int value) {
+        Type(int value) {
             this.value = value;
         }
 
@@ -25,6 +28,59 @@ public class Event {
 
     protected Type type;
     protected Date time;
+    protected Long id;
+
+    public static final Parcelable.Creator CREATOR = new Creator() {
+        @Override
+        public Object createFromParcel(Parcel source) {
+            return new Event(source);
+        }
+
+        @Override
+        public Object[] newArray(int size) {
+            return new Event[size];
+        }
+    };
+
+    public Event(Parcel source) {
+        long id = source.readLong();
+
+        if (id >= 0) {
+            setId(id);
+        }
+
+        setType(Type.fromInt(source.readInt()));
+        setTime(source.readLong());
+    }
+
+    public Event() {}
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+
+        dest.writeLong(getId());
+        dest.writeInt(type.toInt());
+        dest.writeLong(time.getTime());
+    }
+
+    Event setId(long id) {
+        this.id = id;
+
+        return this;
+    }
+
+    public long getId() {
+        return id == null ? -1 : id;
+    }
+
+    public boolean hasId() {
+        return id != null;
+    }
 
     public Event setType(Type type) {
         this.type = type;
