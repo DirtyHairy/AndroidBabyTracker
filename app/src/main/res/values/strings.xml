@@ -14,4 +14,9 @@
     <string name="action_save_event">Save</string>
     <string name="action_cancel">Cancel</string>
     <string name="activity_list_events">Event list</string>
+
+    <string name="event_type_feed">Feed</string>
+    <string name="event_type_diaper">Diaper change</string>
+    <string name="event_type_sleep_start">Sleep start</string>
+    <string name="event_type_sleep_stop">Sleep stop</string>
 </resources>

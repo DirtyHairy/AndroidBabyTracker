@@ -1,12 +1,52 @@
 package de.cspeckner.babytracker.persistence;
 
+import android.content.Context;
+import android.content.res.Resources;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.text.SimpleDateFormat;
+import java.text.DateFormat;
 import java.util.Date;
+import java.util.TimeZone;
+
+import de.cspeckner.babytracker.R;
 
 public class Event implements Parcelable {
+
+    public static class Formatter {
+        Context context;
+
+        public Formatter(Context context) {
+            this.context = context;
+        }
+
+        public String format(Type type) {
+            Resources res = context.getResources();
+
+            switch (type) {
+                case FEED:
+                    return res.getString(R.string.event_type_feed);
+
+                case DIAPER:
+                    return res.getString(R.string.event_type_diaper);
+
+                case SLEEP_START:
+                    return res.getString(R.string.event_type_sleep_start);
+
+                case SLEEP_STOP:
+                    return res.getString(R.string.event_type_sleep_stop);
+            }
+
+            throw new RuntimeException("invalid type - cannot happen");
+        }
+
+        public String format(Event event) {
+            DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(context);
+            DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(context);
+
+            return format(event.getType()) + " @ " + dateFormat.format(event.getTime()) + " / " + timeFormat.format(event.getTime());
+        }
+    }
 
     public enum Type {
         FEED(0), DIAPER(1), SLEEP_START(2), SLEEP_STOP(3);
@@ -125,11 +165,5 @@ public class Event implements Parcelable {
             default:
                 return "invalid";
         }
-    }
-
-    public String toString() {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-
-        return typeToString(type) + " @ " + format.format(time);
     }
 }

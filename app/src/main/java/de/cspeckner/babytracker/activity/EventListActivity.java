@@ -47,6 +47,8 @@ public class EventListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_list);
 
+        setTitle(R.string.activity_list_events);
+
         handler = new Handler();
         clearAlert = createClearAlert(this);
 
@@ -77,7 +79,7 @@ public class EventListActivity extends AppCompatActivity {
 
     private void configureList() {
         Cursor cursor = eventRepository.getCursorForAll();
-        eventListAdapter = new EventCursorAdapter(getApplicationContext(), cursor);
+        eventListAdapter = new EventCursorAdapter(this, cursor);
 
         eventListView.setAdapter(eventListAdapter);
 

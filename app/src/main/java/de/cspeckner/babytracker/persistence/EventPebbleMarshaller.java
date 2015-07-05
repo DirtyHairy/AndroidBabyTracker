@@ -2,8 +2,9 @@ package de.cspeckner.babytracker.persistence;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TimeZone;
 
-public class EventMarshaller {
+public class EventPebbleMarshaller {
 
     public static class InvalidMessageException extends Exception {}
 
@@ -38,10 +39,14 @@ public class EventMarshaller {
             long timestamp = (buffer[i+1] & 0xFF) | ((buffer[i+2] & 0xFF)<< 8) |
                     ((buffer[i+3] & 0xFF) << 16) | ((buffer[i+4] & 0xFF) << 24);
 
+            timestamp *= 1000;
+
+            timestamp -= TimeZone.getDefault().getOffset(timestamp);
+
             Event event = new Event();
             event
                     .setType(decodeType(buffer[i]))
-                    .setTime(1000 * timestamp);
+                    .setTime(timestamp);
 
             events.add(event);
         }

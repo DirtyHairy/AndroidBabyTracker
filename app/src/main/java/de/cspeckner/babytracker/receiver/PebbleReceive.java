@@ -17,7 +17,7 @@ import java.util.UUID;
 import de.cspeckner.babytracker.Constants;
 import de.cspeckner.babytracker.persistence.Event;
 import de.cspeckner.babytracker.persistence.EventDataDbHelper;
-import de.cspeckner.babytracker.persistence.EventMarshaller;
+import de.cspeckner.babytracker.persistence.EventPebbleMarshaller;
 import de.cspeckner.babytracker.persistence.EventRepository;
 import de.cspeckner.babytracker.persistence.InvalidEventIdException;
 
@@ -67,8 +67,8 @@ public class PebbleReceive extends BroadcastReceiver {
         List<Event> events;
 
         try {
-            events = EventMarshaller.unmarshalEvents(data);
-        } catch (EventMarshaller.InvalidMessageException e) {
+            events = EventPebbleMarshaller.unmarshalEvents(data);
+        } catch (EventPebbleMarshaller.InvalidMessageException e) {
             return;
         }
 

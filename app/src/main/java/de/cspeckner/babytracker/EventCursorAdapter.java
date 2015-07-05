@@ -8,7 +8,10 @@ import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
 
+import de.cspeckner.babytracker.persistence.Event;
 import de.cspeckner.babytracker.persistence.EventRepository;
+
+import static de.cspeckner.babytracker.persistence.Event.*;
 
 public class EventCursorAdapter extends CursorAdapter {
 
@@ -23,6 +26,9 @@ public class EventCursorAdapter extends CursorAdapter {
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
-        ((TextView)view).setText(EventRepository.createEvent(cursor).toString());
+        Event.Formatter formatter = new Event.Formatter(context);
+        Event event = EventRepository.createEvent(cursor);
+
+        ((TextView) view).setText(formatter.format(event));
     }
 }
