@@ -94,7 +94,7 @@ public class EventListActivity extends AppCompatActivity {
                     throw new RuntimeException("list item has invalid event ID - cannot happen");
                 }
 
-                dispatchEditEvent(event);
+                dispatchEditEvent(event, true);
             }
         });
     }
@@ -158,13 +158,14 @@ public class EventListActivity extends AppCompatActivity {
         event.setType(Event.Type.FEED);
         event.setTime(new Date());
 
-        dispatchEditEvent(event);
+        dispatchEditEvent(event, false);
     }
 
-    private void dispatchEditEvent(Event event) {
+    private void dispatchEditEvent(Event event, boolean deletable) {
         Intent intent = new Intent(this, EditEventActivity.class);
 
         intent.putExtra(Constants.EXTRA_EVENT, event);
+        intent.putExtra(Constants.EXTRA_DELETE_POSSIBLE, deletable);
 
         startActivityForResult(intent, 0);
     }
@@ -180,6 +181,16 @@ public class EventListActivity extends AppCompatActivity {
                 case Constants.ACTION_SAVE:
                     try {
                         eventRepository.persist(data.<Event>getParcelableExtra(Constants.EXTRA_EVENT));
+                    } catch (InvalidEventIdException e) {
+                        throw new RuntimeException("invalid event ID - cannot happen");
+                    }
+
+                    updateList();
+                    break;
+
+                case Constants.ACTION_DELETE:
+                    try {
+                        eventRepository.delete(data.<Event>getParcelableExtra(Constants.EXTRA_EVENT));
                     } catch (InvalidEventIdException e) {
                         throw new RuntimeException("invalid event ID - cannot happen");
                     }

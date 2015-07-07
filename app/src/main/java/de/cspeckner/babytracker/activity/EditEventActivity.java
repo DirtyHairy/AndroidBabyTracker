@@ -6,6 +6,8 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
@@ -21,6 +23,8 @@ public class EditEventActivity extends AppCompatActivity {
 
     private Spinner eventTypeSpinner;
 
+    private boolean deletePossible;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,6 +37,7 @@ public class EditEventActivity extends AppCompatActivity {
         }
 
         event = intent.getParcelableExtra(Constants.EXTRA_EVENT);
+        deletePossible = intent.getBooleanExtra(Constants.EXTRA_DELETE_POSSIBLE, false);
 
         eventTypeSpinner = configureEventTypeSpinner();
     }
@@ -41,6 +46,9 @@ public class EditEventActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_edit_event, menu);
+
+        menu.findItem(R.id.action_delete).setVisible(deletePossible);
+
         return true;
     }
 
@@ -76,26 +84,36 @@ public class EditEventActivity extends AppCompatActivity {
         eventTypeSpinner.setAdapter(adapter);
         eventTypeSpinner.setSelection(event.getType().toInt());
 
+        eventTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                event.setType(Event.Type.fromInt(position));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
+
         return  eventTypeSpinner;
     }
 
-    private void updateEvent() {
-        event.setType(Event.Type.fromInt(eventTypeSpinner.getSelectedItemPosition()));
+    private Intent createResultIntent(int action) {
+        Intent intent = new Intent();
+        intent.putExtra(Constants.EXTRA_ACTION, action);
+        intent.putExtra(Constants.EXTRA_EVENT, event);
+
+        return intent;
     }
 
     public void onSaveEventClick(MenuItem item) {
-        updateEvent();
-
-        Intent intent = new Intent();
-        intent.putExtra(Constants.EXTRA_ACTION, Constants.ACTION_SAVE);
-        intent.putExtra(Constants.EXTRA_EVENT, event);
-
-        setResult(RESULT_OK, intent);
+        setResult(RESULT_OK, createResultIntent(Constants.ACTION_SAVE));
 
         finish();
     }
 
     public void onDeleteClick(MenuItem item) {
+        setResult(RESULT_OK, createResultIntent(Constants.ACTION_DELETE));
+
         finish();
     }
 }

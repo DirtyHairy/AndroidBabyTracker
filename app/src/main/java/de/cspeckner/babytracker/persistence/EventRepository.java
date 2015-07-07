@@ -25,20 +25,32 @@ public class EventRepository {
         if (event.hasId()) {
             String[] whereArgs = {event.getId() + ""};
 
-            int affectedColumns = db.update(
+            int affectedRows = db.update(
                     EventDataContract.Event.TABLE_NAME,
                     values,
                     String.format("%s = ?", EventDataContract.Event.COLUMN_NAME_ID),
                     whereArgs
             );
 
-            if (affectedColumns == 0) throw new InvalidEventIdException();
+            if (affectedRows == 0) throw new InvalidEventIdException();
         } else {
             long id = db.insertWithOnConflict(EventDataContract.Event.TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_IGNORE);
             event.setId(id);
         }
 
         cache.put(event.getId(), event);
+    }
+
+    public void delete(Event event) throws InvalidEventIdException {
+        String[] whereArgs = {event.getId() + ""};
+
+        int affectedRows = db.delete(
+                EventDataContract.Event.TABLE_NAME,
+                String.format("%s = ?", EventDataContract.Event.COLUMN_NAME_ID),
+                whereArgs
+        );
+
+        if (affectedRows == 0) throw new InvalidEventIdException();
     }
 
     public Event getById(long id) throws InvalidEventIdException {
