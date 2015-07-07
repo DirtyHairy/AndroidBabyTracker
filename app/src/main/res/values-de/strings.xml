@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">Baby Tracker</string>
+
+    <string name="action_settings">Einstellungen</string>
+    <string name="action_clear">Alle löschen</string>
+
+    <string name="clear_alert_title">Alle Ereignisse löschen</string>
+    <string name="clear_alert_message">Sind Sie sicher, dass Sie alle Ereignisse löschen wollen?</string>
+    <string name="clear_alert_confirm_button_label">Ja, weiter</string>
+    <string name="clear_alert_cancel_button_label">Nein, abbrechen</string>
+    <string name="action_add">Hinzufügen</string>
+
+    <string name="title_activity_edit_event">Ereignis bearbeiten</string>
+    <string name="action_save_event">Speichern</string>
+    <string name="action_delete">Löschen</string>
+    <string name="activity_list_events">Ereignisliste</string>
+
+    <string name="event_type_feed">Füttern</string>
+    <string name="event_type_diaper">Windelwechsel</string>
+    <string name="event_type_sleep_start">Eingeschlafen</string>
+    <string name="event_type_sleep_stop">Aufgewacht</string>
+</resources>

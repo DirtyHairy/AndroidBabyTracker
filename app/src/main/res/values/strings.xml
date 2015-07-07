@@ -12,12 +12,8 @@
 
     <string name="title_activity_edit_event">Edit Event</string>
     <string name="action_save_event">Save</string>
-    <string name="action_cancel">Cancel</string>
+    <string name="action_delete">Delete</string>
     <string name="activity_list_events">Event list</string>
-
-    <string name="event_type_label">What?</string>
-    <string name="time_label">When?</string>
-    <string name="time_separator">on</string>
 
     <string name="event_type_feed">Feed</string>
     <string name="event_type_diaper">Diaper change</string>
