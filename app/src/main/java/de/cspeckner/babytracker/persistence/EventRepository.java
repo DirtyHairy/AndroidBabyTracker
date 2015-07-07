@@ -28,7 +28,7 @@ public class EventRepository {
             int affectedColumns = db.update(
                     EventDataContract.Event.TABLE_NAME,
                     values,
-                    String.format("WHERE %s = ?", EventDataContract.Event.COLUMN_NAME_ID),
+                    String.format("%s = ?", EventDataContract.Event.COLUMN_NAME_ID),
                     whereArgs
             );
 

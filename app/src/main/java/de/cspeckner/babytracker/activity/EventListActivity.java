@@ -168,4 +168,28 @@ public class EventListActivity extends AppCompatActivity {
 
         startActivityForResult(intent, 0);
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK) {
+            int action = data.getIntExtra(Constants.EXTRA_ACTION, -1);
+
+            switch (action) {
+                case Constants.ACTION_SAVE:
+                    try {
+                        eventRepository.persist(data.<Event>getParcelableExtra(Constants.EXTRA_EVENT));
+                    } catch (InvalidEventIdException e) {
+                        throw new RuntimeException("invalid event ID - cannot happen");
+                    }
+
+                    updateList();
+                    break;
+
+                default:
+                    throw new RuntimeException("invalid action - cannot happen");
+            }
+        }
+    }
 }

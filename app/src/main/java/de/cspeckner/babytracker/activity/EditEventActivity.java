@@ -2,6 +2,7 @@ package de.cspeckner.babytracker.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,6 +14,8 @@ import de.cspeckner.babytracker.R;
 import de.cspeckner.babytracker.persistence.Event;
 
 public class EditEventActivity extends AppCompatActivity {
+
+    private static final String BUNDLE_KEY_EVENT = "de.cspeckner.babytracker.EVENT";
 
     private Event event;
 
@@ -41,6 +44,20 @@ public class EditEventActivity extends AppCompatActivity {
         return true;
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putParcelable(BUNDLE_KEY_EVENT, event);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        event = savedInstanceState.getParcelable(BUNDLE_KEY_EVENT);
+    }
+
     private Spinner configureEventTypeSpinner() {
         Event.Formatter eventFormatter = new Event.Formatter(getApplicationContext());
 
@@ -57,15 +74,28 @@ public class EditEventActivity extends AppCompatActivity {
 
         eventTypeSpinner = (Spinner)findViewById(R.id.event_type_spinner);
         eventTypeSpinner.setAdapter(adapter);
+        eventTypeSpinner.setSelection(event.getType().toInt());
 
         return  eventTypeSpinner;
     }
 
+    private void updateEvent() {
+        event.setType(Event.Type.fromInt(eventTypeSpinner.getSelectedItemPosition()));
+    }
+
     public void onSaveEventClick(MenuItem item) {
+        updateEvent();
+
+        Intent intent = new Intent();
+        intent.putExtra(Constants.EXTRA_ACTION, Constants.ACTION_SAVE);
+        intent.putExtra(Constants.EXTRA_EVENT, event);
+
+        setResult(RESULT_OK, intent);
+
         finish();
     }
 
-    public void onCancelClick(MenuItem item) {
+    public void onDeleteClick(MenuItem item) {
         finish();
     }
 }

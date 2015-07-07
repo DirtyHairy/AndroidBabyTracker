@@ -16,6 +16,11 @@ public final class Constants {
 
     public static final String EXTRA_EVENT = "de.cspeckner.babytracker.EXTRA_EVENT";
 
+    public static final String EXTRA_ACTION = "de.cspeckner.babytracker.EXTRA_ACTION";
+
+    public static final int ACTION_SAVE = 0;
+    public static final int ACTION_DELETE = 1;
+
     private Constants() {}
 
 }
