@@ -1,5 +1,8 @@
 package de.cspeckner.babytracker.activity;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,7 +12,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.TimePicker;
+
+import java.text.DateFormat;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import de.cspeckner.babytracker.Constants;
 import de.cspeckner.babytracker.R;
@@ -22,6 +32,10 @@ public class EditEventActivity extends AppCompatActivity {
     private Event event;
 
     private Spinner eventTypeSpinner;
+
+    private TextView timeEdit;
+
+    private TextView dateEdit;
 
     private boolean deletePossible;
 
@@ -40,6 +54,8 @@ public class EditEventActivity extends AppCompatActivity {
         deletePossible = intent.getBooleanExtra(Constants.EXTRA_DELETE_POSSIBLE, false);
 
         eventTypeSpinner = configureEventTypeSpinner();
+        timeEdit = configureTimeEdit();
+        dateEdit = configureDateEdit();
     }
 
     @Override
@@ -95,6 +111,104 @@ public class EditEventActivity extends AppCompatActivity {
         });
 
         return  eventTypeSpinner;
+    }
+
+    private void updateTimeEdit(TextView timeEdit) {
+        DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(this);
+
+        timeEdit.setText(timeFormat.format(event.getTime()));
+    }
+
+    private void updateTimeEdit() {
+        updateTimeEdit(timeEdit);
+    }
+
+    private TextView configureTimeEdit() {
+        final Context dialogContext = this;
+
+        TextView timeEdit = (TextView)findViewById(R.id.time_edit);
+        updateTimeEdit(timeEdit);
+
+        timeEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Calendar calendar = GregorianCalendar.getInstance();
+                calendar.setTime(event.getTime());
+
+                TimePickerDialog.OnTimeSetListener listener = new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                        Calendar calendar = GregorianCalendar.getInstance();
+                        calendar.setTime(event.getTime());
+
+                        calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                        calendar.set(Calendar.MINUTE, minute);
+                        calendar.set(Calendar.SECOND, 0);
+                        calendar.set(Calendar.MILLISECOND, 0);
+
+                        event.setTime(calendar.getTime());
+
+                        updateTimeEdit();
+                    }
+                };
+
+                TimePickerDialog dialog = new TimePickerDialog(dialogContext, listener,
+                        calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true);
+
+                dialog.show();
+            }
+        });
+
+        return timeEdit;
+    }
+
+    private void updateDateEdit(TextView dateEdit) {
+        DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(this);
+
+        dateEdit.setText(dateFormat.format(event.getTime()));
+    }
+
+    private void updateDateEdit() {
+        updateDateEdit(dateEdit);
+    }
+
+    private TextView configureDateEdit() {
+        final Context dialogContext = this;
+
+        TextView dateEdit = (TextView)findViewById(R.id.date_edit);
+
+        updateDateEdit(dateEdit);
+
+        dateEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Calendar calendar = GregorianCalendar.getInstance();
+                calendar.setTime(event.getTime());
+
+                DatePickerDialog.OnDateSetListener listener = new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                        Calendar calendar = GregorianCalendar.getInstance();
+                        calendar.setTime(event.getTime());
+
+                        calendar.set(Calendar.YEAR, year);
+                        calendar.set(Calendar.MONTH, monthOfYear);
+                        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+                        event.setTime(calendar.getTime());
+
+                        updateDateEdit();
+                    }
+                };
+
+                DatePickerDialog dialog = new DatePickerDialog(dialogContext, listener,
+                        calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+
+                dialog.show();
+            }
+        });
+
+        return dateEdit;
     }
 
     private Intent createResultIntent(int action) {

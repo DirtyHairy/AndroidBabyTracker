@@ -12,6 +12,37 @@
         android:id="@+id/event_type_spinner"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
         android:focusable="false" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceListItem"
+        android:text="sometime"
+        android:id="@+id/time_edit"
+        android:layout_below="@+id/event_type_spinner"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceListItem"
+        android:text=","
+        android:id="@+id/time_date_separator"
+        android:layout_below="@+id/event_type_spinner"
+        android:layout_toLeftOf="@id/time_edit"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:layout_alignParentTop="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceListItem"
+        android:text="somedate"
+        android:id="@+id/date_edit"
+        android:layout_below="@+id/event_type_spinner"
+        android:layout_toLeftOf="@id/time_date_separator"
+        android:layout_alignParentTop="true" />
 </RelativeLayout>

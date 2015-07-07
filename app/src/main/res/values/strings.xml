@@ -15,6 +15,10 @@
     <string name="action_cancel">Cancel</string>
     <string name="activity_list_events">Event list</string>
 
+    <string name="event_type_label">What?</string>
+    <string name="time_label">When?</string>
+    <string name="time_separator">on</string>
+
     <string name="event_type_feed">Feed</string>
     <string name="event_type_diaper">Diaper change</string>
     <string name="event_type_sleep_start">Sleep start</string>
