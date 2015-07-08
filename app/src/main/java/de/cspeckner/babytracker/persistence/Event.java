@@ -7,7 +7,6 @@ import android.os.Parcelable;
 
 import java.text.DateFormat;
 import java.util.Date;
-import java.util.TimeZone;
 
 import de.cspeckner.babytracker.R;
 
@@ -114,6 +113,12 @@ public class Event implements Parcelable {
         return this;
     }
 
+    Event clearId() {
+        this.id = null;
+
+        return this;
+    }
+
     public long getId() {
         return id == null ? -1 : id;
     }
@@ -146,24 +151,5 @@ public class Event implements Parcelable {
         this.time = new Date(timestamp);
 
         return this;
-    }
-
-    protected static String typeToString(Type type) {
-        switch (type) {
-            case FEED:
-                return "feed";
-
-            case DIAPER:
-                return "change diaper";
-
-            case SLEEP_START:
-                return "sleep start";
-
-            case SLEEP_STOP:
-                return "sleep stop";
-
-            default:
-                return "invalid";
-        }
     }
 }

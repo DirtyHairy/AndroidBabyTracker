@@ -51,6 +51,10 @@ public class EventRepository {
         );
 
         if (affectedRows == 0) throw new InvalidEventIdException();
+
+        cache.remove(event.getId());
+
+        event.clearId();
     }
 
     public Event getById(long id) throws InvalidEventIdException {
