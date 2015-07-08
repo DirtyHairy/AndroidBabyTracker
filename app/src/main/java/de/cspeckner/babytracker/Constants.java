@@ -4,7 +4,7 @@ import java.util.UUID;
 
 public final class Constants {
 
-    public static final UUID watchappUuid = UUID.fromString("01a70c71-d8c1-4e33-9c12-c646168380e1");
+    public static final UUID watchappUuid = UUID.fromString("cb49397f-824b-422c-bfbe-697fbe02b6ad");
 
     public static final int MESSAGE_TYPE_EVENT_TRANSMISSION = 1;
 
