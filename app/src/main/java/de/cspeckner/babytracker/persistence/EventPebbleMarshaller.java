@@ -35,7 +35,7 @@ public class EventPebbleMarshaller {
 
         ArrayList<Event> events = new ArrayList<>(buffer[0]);
 
-        for (byte i = 1; i < buffer.length; i += 5) {
+        for (int i = 1; i < buffer.length; i += 5) {
             long timestamp = (buffer[i+1] & 0xFF) | ((buffer[i+2] & 0xFF)<< 8) |
                     ((buffer[i+3] & 0xFF) << 16) | ((buffer[i+4] & 0xFF) << 24);
 
